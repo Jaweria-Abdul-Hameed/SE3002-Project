@@ -3,6 +3,12 @@
 All of our own test code lives under `tests/team/`. Upstream tests under `api/src/test/`
 are not ours and are excluded from our coverage and mutation gates.
 
+## Team
+
+| Member | GitHub | Area |
+|---|---|---|
+| Muhammad Aun | m-aun-005 | TBD |
+
 ## System under test
 
 - **Upstream:** https://github.com/Grashjs/cmms (Atlas CMMS)
