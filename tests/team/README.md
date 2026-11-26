@@ -5,9 +5,14 @@ are not ours and are excluded from our coverage and mutation gates.
 
 ## Team
 
-| Member | GitHub | Area |
-|---|---|---|
-| Muhammad Aun | m-aun-005 | TBD |
+| Member | GitHub | Area | Shared test-management lead |
+|---|---|---|---|
+| Jaweria Abdul Hameed | Jaweria-Abdul-Hameed | (1) Static analysis, white-box testing, mutation testing, CI quality gate | Test plan, estimation, exit and release criteria |
+| Mohsin Khan | mohsinkhandevs | (2) API testing and automated test-data generation | Defects and root-cause analysis, traceability, weekly progress metrics |
+| Muhammad Aun | m-aun-005 | (3) Use cases, usability and accessibility, security, performance | Risk register |
+
+Every member writes and automates two use cases (each with at least two alternative and two
+exception flows) and commits their own area's work. Any member may be examined on any component.
 
 ## System under test
 
