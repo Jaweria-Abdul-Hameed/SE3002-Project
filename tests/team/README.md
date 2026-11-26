@@ -29,4 +29,5 @@ because they deploy using upstream's secrets.
 
 | Folder | Purpose | Owner area |
 |---|---|---|
+| `env/` | Seed (`seed.mjs`) and reset (`reset.mjs`) scripts for the fixed test data; see `docs/section-1-scope-and-test-basis.md` §1.8 | (2) API testing and test data |
 | `pit-mutators/` | Custom PIT mutation operators based on our business rules | (1) static analysis, white-box, mutation, CI |

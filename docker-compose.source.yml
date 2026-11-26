@@ -1,0 +1,10 @@
+# Build the backend and frontend from this repository's source (baseline a3c7ce38)
+# instead of pulling upstream's published "latest" images.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.source.yml up -d --build
+services:
+  api:
+    image: se3002/atlas-api:local
+    build: ./api
+  frontend:
+    image: se3002/atlas-frontend:local
+    build: ./frontend
