@@ -18,7 +18,14 @@ concurrency:
   cancel-in-progress: true
 
 # In-scope code (docs/section-1-scope-and-test-basis.md, section 1.7).
+# MAVEN_ARGS: Maven Central sometimes answers 429 (Too Many Requests). Let Maven retry each download
+# up to 10 times, 15 s apart. A download that still fails fails the job (this is not an escape hatch).
 env:
+  MAVEN_ARGS: >-
+    -B
+    -Daether.transport.http.retryHandler.count=10
+    -Daether.transport.http.retryHandler.interval=15000
+    -Daether.transport.http.retryHandler.serviceUnavailable=429,503
   IN_SCOPE: >-
     **/controller/RequestController.java,**/service/RequestService.java,**/service/WorkOrderService.java,**/repository/WorkOrderRepository.java,**/utils/Consts.java,**/utils/Helper.java,**/model/Request.java,**/model/abstracts/WorkOrderBase.java
 
