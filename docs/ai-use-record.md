@@ -44,6 +44,7 @@ A copy is kept outside the repository by Jaweria. The "Prompt" column refers to 
 | 17 | 2026-11-27 | Jaweria | This record | `docs/ai-use-record.md` | Jaweria pointed out that the record should include the edits and changes she asked for while reviewing. She then asked for the teacher-announcement decision (row 14) and the report-format question (row 15) to be added, and for commit-mechanics notes to be left out. | Jaweria: pending | S2 |
 | 18 | 2026-11-25 | Jaweria | What does the brief require for the CI gate and pull requests? | Explanation of §2 of the brief: SonarQube, all tests and mutation on every pull request; merge and deployment blocked below the thresholds; no escape hatches; one documented fix through a pull request that fails before and passes after; one pull request the pipeline blocked | Planned for the CI part of Area 1. Not built yet. | Jaweria ✔ | S2 |
 | 19 | 2026-11-25 | Jaweria | Keep the project's context between Claude Code sessions | Claude Code's local memory notes (outside the repository): repository setup, decisions, verified behaviour | Jaweria reviewed the summary the next morning before continuing. | Jaweria ✔ | S2 |
+| 20 | 2026-11-27 | Jaweria | Section 2.1: SonarQube analysis and hand-calculated cyclomatic complexity | `tests/team/sonar/run-sonar.mjs` (SonarQube in Docker, project metrics, per-method complexity via rule java:S1541 with threshold 1); `docs/section-2-1-sonarqube-and-complexity.md` (decision points, CFG, V(G) by two formulas, comparison, 8 basis paths) for `RequestService.cancel` | AI validated the script in probe mode (SonarQube gives `cancel` = 8, the same as the hand calculation) and deleted its own output. The metrics and screenshots come from Jaweria's own run. On self-check the AI corrected its lambda count from 3 to 5. Jaweria redraws the CFG by hand. | Jaweria: pending | S2 |
 
 ## Not used
 
@@ -281,3 +282,9 @@ Prompts not tied to any row (for example, git housekeeping) are not listed here.
 **S2-15** · 2026-11-25 20:41 UTC
 
 > remember everything -- ill look at it after waking up
+
+### Row 20 — Section 2.1: SonarQube and cyclomatic complexity
+
+**S2-36** · 2026-11-27 11:23 UTC
+
+> lets begin with section 2
