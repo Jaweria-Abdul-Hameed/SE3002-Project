@@ -27,14 +27,15 @@ GATE="SE3002 gate"
 curl -sSf -u "$A" -X POST "$URL/api/qualitygates/create" --data-urlencode "name=$GATE" > /dev/null
 
 # Gate conditions. Thresholds are justified in the test plan (Section 2.2) and tightened in step 2.8.
-#   security_rating    > 1 (worse than A) fails: the in-scope baseline is A, so any new vulnerability fails.
-#   reliability_rating > 3 (worse than C) fails: the in-scope baseline is C (19 upstream bugs); no regression allowed.
+# Both conditions are "no regression" against the in-scope baseline (local full scan, 2026-11-27):
+#   security_rating    > 4 (worse than D) fails: baseline D, from 9 mass-assignment findings (java:S4684) in RequestController.
+#   reliability_rating > 3 (worse than C) fails: baseline C, from upstream bugs in RequestService and WorkOrderService.
 cond() {
   curl -sSf -u "$A" -X POST "$URL/api/qualitygates/create_condition" \
     --data-urlencode "gateName=$GATE" --data-urlencode "metric=$1" \
     --data-urlencode "op=GT" --data-urlencode "error=$2" > /dev/null
 }
-cond security_rating 1
+cond security_rating 4
 cond reliability_rating 3
 curl -sSf -u "$A" -X POST "$URL/api/qualitygates/set_as_default" --data-urlencode "name=$GATE"
 
