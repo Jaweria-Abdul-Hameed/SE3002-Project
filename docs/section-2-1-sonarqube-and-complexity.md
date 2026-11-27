@@ -18,23 +18,33 @@ Test sources are not analysed. Upstream's tests are not ours, and our own covera
 
 ## 2.1.2 Project metrics
 
-Source: `docs/evidence/sonar/project-metrics.json`. Screenshots: `docs/evidence/sonar/screenshots/`.
+Source: `docs/evidence/sonar/project-metrics.json` (SonarQube 26.9, analysed 2026-11-27 12:12 UTC by Jaweria). Screenshots: `docs/evidence/sonar/screenshots/`.
 
 | Metric | Value | What it shows |
 |---|---|---|
-| Lines of code (`ncloc`) | _from run_ | Size of the analysed code, without blank lines or comments. The other numbers should be read against this. |
-| Cyclomatic complexity (`complexity`) | _from run_ | The number of independent paths through all methods together. It is the minimum number of tests needed to cover every path once. |
-| Cognitive complexity | _from run_ | How hard the code is for a person to follow. Nesting and breaks in linear flow cost extra, unlike cyclomatic complexity. |
-| Duplication (`duplicated_lines_density`, blocks) | _from run_ | Share of lines that are copied elsewhere. Duplicated logic must be fixed in several places, so defects come back. |
-| Code smells | _from run_ | Maintainability issues: the code works but is hard to change (long methods, unused code, naming). |
-| Bugs | _from run_ | Code SonarQube believes behaves incorrectly at runtime (null dereferences, wrong comparisons). |
-| Vulnerabilities | _from run_ | Code that can be exploited (injection, weak crypto, unsafe deserialisation). |
-| Security hotspots | _from run_ | Security-sensitive code that a person must review. It is not necessarily a vulnerability. |
-| Coverage | _from run_ | Share of lines and branches executed by tests. It is 0 % here because no test results are imported yet. Our own coverage is reported from Section 2.3 and in CI. |
-| Technical debt (`sqale_index`, debt ratio) | _from run_ | Estimated time to fix all code smells, and that time as a share of the time to write the code. |
-| Ratings (maintainability, reliability, security, security review) | _from run_ | A (best) to E (worst). Each is driven by the worst issue in its category: one blocker bug gives Reliability E. |
+| Lines of code (`ncloc`) | **41,833** | Size of the analysed code, without blank lines or comments. The other numbers should be read against this. |
+| Cyclomatic complexity (`complexity`) | **5,171** across 2,294 functions (2.25 on average) | The number of independent paths through all methods together. It is the minimum number of tests needed to cover every path once. |
+| Cognitive complexity | **4,148** | How hard the code is for a person to follow. Nesting and breaks in linear flow cost extra, unlike cyclomatic complexity. |
+| Duplication (`duplicated_lines_density`, blocks) | **2.5 %**, 94 blocks | Share of lines that are copied elsewhere. Duplicated logic must be fixed in several places, so defects come back. |
+| Code smells | **1,351** | Maintainability issues: the code works but is hard to change (long methods, unused code, naming). |
+| Bugs | **114** (1 blocker, 4 critical, 85 major, 24 minor) | Code SonarQube believes behaves incorrectly at runtime (null dereferences, wrong comparisons). |
+| Vulnerabilities | **215** (191 critical) | Code that can be exploited (injection, weak crypto, unsafe deserialisation). |
+| Security hotspots | **0** | Security-sensitive code that a person must review. It is not necessarily a vulnerability. |
+| Coverage | **0.0 %** | Share of lines and branches executed by tests. It is 0 % here because no test results are imported yet. Our own coverage is reported from Section 2.3 and in CI. |
+| Technical debt (`sqale_index`, debt ratio) | **12,210 min** (about 203 h, or 25 eight-hour days); debt ratio **1.0 %** | Estimated time to fix all code smells, and that time as a share of the time to write the code. |
+| Ratings (maintainability, reliability, security, security review) | Maintainability **A**, Reliability **E**, Security **D**, Security review **A** | A (best) to E (worst). Each is driven by the worst issue in its category: one blocker bug gives Reliability E. |
 
-> To be filled from Jaweria's own run, with a short note on what each value means for our module.
+**What the numbers mean for our module**
+
+- **Complexity is low on average and concentrated in a few places.** 2.25 per function means most methods are simple getters, setters and mappings. The rule logic sits in a few large methods: `RequestService.approveInternal` (9) and `cancel` (8), which is why those are our unit-test and mutation targets.
+- **Reliability E comes from one blocker bug outside our scope.** It is `PartService.java:439`, where `@Transactional` settings conflict. The most common bug, 78 of 114, is java:S3655: `Optional.get()` without checking `isPresent()`. Two are in our scope:
+  - `RequestService.java:430` (approve) and `:492` (cancel) look up the request's creator with `.get()`.
+  - If that user no longer exists, the call throws `NoSuchElementException` (HTTP 500) instead of completing the decision. This is a candidate defect for the API tests.
+- **Security D comes from 191 critical issues, 189 of them rule java:S4684 (mass assignment).** Controllers bind JSON request bodies directly onto database entities, so a client can set fields it should not control. This matches the hidden `demo` field on sign-up (Section 1) and is followed up in the security assessment. The other critical findings are CSRF protection disabled in `WebSecurityConfig.java:52` and `SwaggerSecurityConfig.java:18`. That is normal for a stateless JWT API, but it must be justified.
+- **Maintainability A despite 1,351 code smells.** The rating is based on the debt ratio: 1.0 % is well under the 5 % limit for A. The smells are many but small relative to a 41,833-line code base.
+- **Duplication of 2.5 % is low.** It is below the 3 % Sonar way uses for new code.
+- **Coverage is 0.0 % because no test results were imported into this analysis.** Upstream's tests are not ours, and test sources were excluded. Coverage of our in-scope code is measured from Section 2.3 and enforced in CI.
+- **There are no security hotspots,** so the security review rating is A by default.
 
 ## 2.1.3 Hand-calculated cyclomatic complexity: `RequestService.cancel`
 
