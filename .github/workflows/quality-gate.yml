@@ -1,0 +1,96 @@
+# SE3002 quality gate. Runs on every pull request to main and on every push to main.
+# A merge into main requires the "tests" and "sonarqube" checks to pass (branch protection).
+# Deployment (publishing the API image) runs only after both gates pass on main.
+# No step may be allowed to fail (no continue-on-error, no "|| true").
+name: quality-gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+# In-scope code (docs/section-1-scope-and-test-basis.md, section 1.7).
+env:
+  IN_SCOPE: >-
+    **/controller/RequestController.java,**/service/RequestService.java,**/service/WorkOrderService.java,**/repository/WorkOrderRepository.java,**/utils/Consts.java,**/utils/Helper.java,**/model/Request.java,**/model/abstracts/WorkOrderBase.java
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Unit tests of our custom PIT mutation operators
+        run: mvn -B -f tests/team/pit-mutators/pom.xml install
+      - name: Compile the system under test
+        run: mvn -B -f api/pom.xml -DskipTests compile
+      # Step 2.3 adds our unit tests with JaCoCo coverage and the PIT mutation run here.
+
+  sonarqube:
+    needs: tests
+    runs-on: ubuntu-latest
+    services:
+      sonarqube:
+        image: sonarqube:community
+        ports:
+          - 9000:9000
+        env:
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Prepare SonarQube and our quality gate
+        run: bash tests/team/ci/sonar-setup.sh
+      - name: Analyse in-scope code and wait for the quality gate
+        run: >-
+          mvn -B -f api/pom.xml -DskipTests compile
+          org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar
+          -Dsonar.host.url=http://localhost:9000
+          -Dsonar.token=${{ env.SONAR_TOKEN }}
+          -Dsonar.projectKey=se3002-atlas-ci
+          -Dsonar.projectName=SE3002-CI
+          -Dsonar.tests=
+          "-Dsonar.inclusions=${{ env.IN_SCOPE }}"
+          -Dsonar.qualitygate.wait=true
+          -Dsonar.qualitygate.timeout=600
+
+  deploy:
+    needs: [tests, sonarqube]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Image name (GHCR needs lower case)
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/se3002-atlas-api" >> "$GITHUB_ENV"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish the API image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./api
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
