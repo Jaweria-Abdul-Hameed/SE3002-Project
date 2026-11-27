@@ -10,13 +10,14 @@ set -euo pipefail
 URL=${SONAR_URL:-http://localhost:9000}
 PASS="ci-$(openssl rand -hex 12)"
 
-status=""
-for i in $(seq 1 100); do
-  status=$(curl -s "$URL/api/system/status" | sed -n 's/.*"status":"\([A-Z]*\)".*/\1/p')
-  [ "$status" = "UP" ] && break
+# The container refuses connections while it boots. A failed check inside an "until" condition does
+# not stop the script under "set -e"; it just tries again.
+tries=0
+until curl -s "$URL/api/system/status" | grep -q '"status":"UP"'; do
+  tries=$((tries + 1))
+  if [ "$tries" -ge 100 ]; then echo "SonarQube did not start"; exit 1; fi
   sleep 3
 done
-[ "$status" = "UP" ] || { echo "SonarQube did not start"; exit 1; }
 
 curl -sf -u admin:admin -X POST "$URL/api/users/change_password" \
   --data-urlencode "login=admin" --data-urlencode "previousPassword=admin" --data-urlencode "password=$PASS"
