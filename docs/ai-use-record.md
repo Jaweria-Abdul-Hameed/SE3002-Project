@@ -44,6 +44,9 @@ A copy is kept outside the repository by Jaweria. The "Prompt" column refers to 
 | 17 | 2026-11-27 | Jaweria | This record | `docs/ai-use-record.md` | Jaweria pointed out that the record should include the edits and changes she asked for while reviewing. She then asked for the teacher-announcement decision (row 14) and the report-format question (row 15) to be added, and for commit-mechanics notes to be left out. | Jaweria: pending | S2 |
 | 18 | 2026-11-25 | Jaweria | What does the brief require for the CI gate and pull requests? | Explanation of §2 of the brief: SonarQube, all tests and mutation on every pull request; merge and deployment blocked below the thresholds; no escape hatches; one documented fix through a pull request that fails before and passes after; one pull request the pipeline blocked | Planned for the CI part of Area 1. Not built yet. | Jaweria ✔ | S2 |
 | 19 | 2026-11-25 | Jaweria | Keep the project's context between Claude Code sessions | Claude Code's local memory notes (outside the repository): repository setup, decisions, verified behaviour | Jaweria reviewed the summary the next morning before continuing. | Jaweria ✔ | S2 |
+| 20 | 2026-11-27 | Jaweria | Section 2.1: SonarQube analysis and hand-calculated cyclomatic complexity | `tests/team/sonar/run-sonar.mjs` (SonarQube in Docker, project metrics, per-method complexity via rule java:S1541 with threshold 1); `docs/section-2-1-sonarqube-and-complexity.md` (decision points, CFG, V(G) by two formulas, comparison, 8 basis paths) for `RequestService.cancel` | AI validated the script in probe mode (SonarQube gives `cancel` = 8, the same as the hand calculation) and deleted its own output. The metrics and screenshots come from Jaweria's own run. On self-check the AI corrected its lambda count from 3 to 5. Jaweria redraws the CFG by hand. Jaweria ran the full analysis herself (2026-11-27 12:12 UTC). The AI filled the metrics table from her `project-metrics.json` and drafted the notes from SonarQube's issue breakdown (the blocker bug behind Reliability E; java:S4684 behind Security D). | Jaweria: pending | S2 |
+| 21 | 2026-11-27 | Jaweria | Build the CI quality gate early instead of at step 2.8 | `.github/workflows/quality-gate.yml` (jobs: tests, sonarqube, deploy to GHCR only after both gates pass on main); `tests/team/ci/sonar-setup.sh` (fresh SonarQube container, our own gate on overall in-scope code: no regression from the baseline, Security no worse than D, Reliability no worse than C); pull request #1 | Jaweria asked whether SonarQube must also run in GitHub Actions and chose to build CI early. Run 1 failed (curl exit 56 while SonarQube was still booting), so the AI rewrote the wait loop without `\|\| true`. Run 2 failed on SonarQube's password policy. Run 3 showed the gate working but failing: the AI had set Security A from the two service files only, while `RequestController` rates D (9 mass-assignment findings). The AI corrected the thresholds to the measured in-scope baseline. | Jaweria: pending | S2 |
+| 22 | 2026-11-27 | Jaweria, Aun, Mohsin | Section 2.2: test plan, risk register, exit criteria, estimation, traceability | `docs/section-2-2-test-plan.md` (Jaweria), `docs/section-2-2-risk-register.md` (Aun: 12 product and 4 project risks, 5 × 5), `docs/section-2-2-traceability.md` (Mohsin) | The schedule is based on Jaweria's plan to finish Sections 2–5 by about 3 am on 28 Nov, with submission on 29 Nov at 23:59. Risks use the defects and limits measured in Section 1 and the feasibility runs. Each owner reviews their file. | Jaweria: pending; Aun: pending; Mohsin: pending | S2 |
 
 ## Not used
 
@@ -281,3 +284,23 @@ Prompts not tied to any row (for example, git housekeeping) are not listed here.
 **S2-15** · 2026-11-25 20:41 UTC
 
 > remember everything -- ill look at it after waking up
+
+### Row 20 — Section 2.1: SonarQube and cyclomatic complexity
+
+**S2-36** · 2026-11-27 11:23 UTC
+
+> lets begin with section 2
+
+### Row 21 — CI quality gate built early
+
+**S2-40** · 2026-11-27 12:10 UTC
+
+> but dont we have to have a ci gate for this -- doesnt the doc say that every action including sonarqube should be a github action
+
+**S2-41** · 2026-11-27 12:12 UTC
+
+> Ci skeleton earlier -- but rn were waiting for the sonarqube run in my terminal to finish via maven -- also for 2.2 -- its 27nov 5 11 pm and i plan to finish till part 5 tonight or early moring till 2 - 3 am on 28 nnov and submission is 11 59 pm 29 nov
+
+### Row 22 — Section 2.2: plan, risks, traceability
+
+- Same prompt as **S2-41** above.
