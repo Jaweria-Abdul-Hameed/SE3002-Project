@@ -92,8 +92,60 @@ jobs:
           -Dsonar.qualitygate.wait=true
           -Dsonar.qualitygate.timeout=600
 
+  system-tests:
+    # API tests (generated EP/BVA data, rules, state transitions, BR-3 boundary) against the whole system,
+    # built from this commit and started with docker compose.
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_CMD: docker compose -f docker-compose.yml -f docker-compose.source.yml -f tests/team/ci/docker-compose.ci.yml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/team/api/package-lock.json
+      - name: Build the API JAR for the API image
+        run: |
+          mvn -f api/pom.xml -DskipTests package
+          mkdir -p deploy-context
+          cp api/target/app.jar deploy-context/app.jar
+          cp tests/team/ci/Dockerfile.deploy deploy-context/Dockerfile
+      - name: Configure the system
+        run: cp .env.example .env
+      - name: Build and start the system (API, frontend, Postgres, MinIO, nginx)
+        run: $COMPOSE_CMD up -d --build
+      - name: Install the API test tools
+        working-directory: tests/team/api
+        run: npm ci
+      - name: Generated test data matches the spec (regenerate and compare)
+        working-directory: tests/team/api
+        run: |
+          npm run generate
+          node -e "const a=require('./generated/test-data.json');const {execSync}=require('child_process');const b=JSON.parse(execSync('git show HEAD:tests/team/api/generated/test-data.json'));delete a.generatedAt;delete b.generatedAt;if(JSON.stringify(a)!==JSON.stringify(b)){console.error('generated/test-data.json is out of date: run npm run generate and commit it');process.exit(1)}"
+      - name: API tests
+        working-directory: tests/team/api
+        run: npm test
+      - name: API coverage report
+        working-directory: tests/team/api
+        run: node report/api-coverage.mjs
+      - name: Keep the API test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results
+          path: tests/team/api/results/
+      - name: Backend log on failure
+        if: failure()
+        run: docker logs --tail 200 atlas-cmms-backend
+
   deploy:
-    needs: [tests, sonarqube]
+    needs: [tests, sonarqube, system-tests]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
