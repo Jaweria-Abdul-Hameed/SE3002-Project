@@ -373,7 +373,8 @@ public class RequestService {
 
     @Transactional
     public WorkOrder approve(Long id, RequestApproveDTO requestApproveDTO, User user) {
-        if (!(user.getRole().getViewPermissions().contains(PermissionEntity.SETTINGS) || user.getRole().getCode().equals(RoleCode.LIMITED_ADMIN))) {
+        // Simplified: only users who can see Settings decide on requests.
+        if (!user.getRole().getViewPermissions().contains(PermissionEntity.SETTINGS)) {
             throw new CustomException("Forbidden", HttpStatus.FORBIDDEN);
         }
         return approveInternal(id, requestApproveDTO, user, true);
