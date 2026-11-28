@@ -18,7 +18,14 @@ concurrency:
   cancel-in-progress: true
 
 # In-scope code (docs/section-1-scope-and-test-basis.md, section 1.7).
+# MAVEN_ARGS: Maven Central sometimes answers 429 (Too Many Requests). Let Maven retry each download
+# up to 10 times, 15 s apart. A download that still fails fails the job (this is not an escape hatch).
 env:
+  MAVEN_ARGS: >-
+    -B
+    -Daether.transport.http.retryHandler.count=10
+    -Daether.transport.http.retryHandler.interval=15000
+    -Daether.transport.http.retryHandler.serviceUnavailable=429,503
   IN_SCOPE: >-
     **/controller/RequestController.java,**/service/RequestService.java,**/service/WorkOrderService.java,**/repository/WorkOrderRepository.java,**/utils/Consts.java,**/utils/Helper.java,**/model/Request.java,**/model/abstracts/WorkOrderBase.java
 
@@ -34,9 +41,21 @@ jobs:
           cache: maven
       - name: Unit tests of our custom PIT mutation operators
         run: mvn -B -f tests/team/pit-mutators/pom.xml install
-      - name: Compile the system under test
-        run: mvn -B -f api/pom.xml -DskipTests compile
-      # Step 2.3 adds our unit tests with JaCoCo coverage and the PIT mutation run here.
+      - name: Our unit tests with JaCoCo coverage (only *TeamTest; upstream tests are not run)
+        run: mvn -B -f api/pom.xml -Pteam test jacoco:report
+      - name: "Exit criterion EX-2: 100 % line and branch coverage of in-scope methods"
+        run: node tests/team/ci/check-coverage.mjs api/target/site/jacoco/jacoco.xml
+      - name: Mutation testing with PIT and our custom operators
+        run: mvn -B -f api/pom.xml -Pteam org.pitest:pitest-maven:mutationCoverage
+      - name: Keep the coverage and mutation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-coverage-mutation-reports
+          path: |
+            api/target/site/jacoco/
+            api/target/pit-reports/
+            api/target/surefire-reports/
 
   sonarqube:
     needs: tests
@@ -57,10 +76,13 @@ jobs:
           cache: maven
       - name: Prepare SonarQube and our quality gate
         run: bash tests/team/ci/sonar-setup.sh
-      - name: Analyse in-scope code and wait for the quality gate
+      - name: Pull in the pit-mutators jar the team profile needs
+        run: mvn -B -f tests/team/pit-mutators/pom.xml -DskipTests install
+      - name: Analyse in-scope code (with our coverage) and wait for the quality gate
         run: >-
-          mvn -B -f api/pom.xml -DskipTests compile
+          mvn -B -f api/pom.xml -Pteam test jacoco:report
           org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
           -Dsonar.host.url=http://localhost:9000
           -Dsonar.token=${{ env.SONAR_TOKEN }}
           -Dsonar.projectKey=se3002-atlas-ci
@@ -70,8 +92,83 @@ jobs:
           -Dsonar.qualitygate.wait=true
           -Dsonar.qualitygate.timeout=600
 
+  system-tests:
+    # API tests (generated EP/BVA data, rules, state transitions, BR-3 boundary) and the Playwright use-case
+    # tests against the whole system,
+    # built from this commit and started with docker compose.
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_CMD: docker compose -f docker-compose.yml -f docker-compose.source.yml -f tests/team/ci/docker-compose.ci.yml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            tests/team/api/package-lock.json
+            tests/team/e2e/package-lock.json
+      - name: Build the API JAR for the API image
+        run: |
+          mvn -f api/pom.xml -DskipTests package
+          mkdir -p deploy-context
+          cp api/target/app.jar deploy-context/app.jar
+          cp tests/team/ci/Dockerfile.deploy deploy-context/Dockerfile
+      - name: Configure the system
+        run: cp .env.example .env
+      - name: Build and start the system (API, frontend, Postgres, MinIO, nginx)
+        run: $COMPOSE_CMD up -d --build
+      - name: Install the API test tools
+        working-directory: tests/team/api
+        run: npm ci
+      - name: Generated test data matches the spec (regenerate and compare)
+        working-directory: tests/team/api
+        run: |
+          npm run generate
+          node -e "const a=require('./generated/test-data.json');const {execSync}=require('child_process');const b=JSON.parse(execSync('git show HEAD:tests/team/api/generated/test-data.json'));delete a.generatedAt;delete b.generatedAt;if(JSON.stringify(a)!==JSON.stringify(b)){console.error('generated/test-data.json is out of date: run npm run generate and commit it');process.exit(1)}"
+      - name: API tests
+        working-directory: tests/team/api
+        run: npm test
+      - name: API coverage report
+        working-directory: tests/team/api
+        run: node report/api-coverage.mjs
+      - name: Install the browser test tools
+        working-directory: tests/team/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Use-case, usability and axe accessibility tests in the browser (Playwright, Chromium)
+        working-directory: tests/team/e2e
+        run: npx playwright test
+      - name: Keep the Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/team/e2e/playwright-report/
+      - name: Keep the axe-core accessibility results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axe-results
+          path: docs/evidence/a11y/latest/
+      - name: Keep the API test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results
+          path: tests/team/api/results/
+      - name: Backend log on failure
+        if: failure()
+        run: docker logs --tail 200 atlas-cmms-backend
+
   deploy:
-    needs: [tests, sonarqube]
+    needs: [tests, sonarqube, system-tests]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -79,6 +176,16 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Build the API JAR
+        run: |
+          mvn -f api/pom.xml -DskipTests package
+          mkdir -p deploy-context
+          cp api/target/app.jar deploy-context/app.jar
       - name: Image name (GHCR needs lower case)
         run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/se3002-atlas-api" >> "$GITHUB_ENV"
       - uses: docker/login-action@v3
@@ -89,7 +196,8 @@ jobs:
       - name: Build and publish the API image
         uses: docker/build-push-action@v6
         with:
-          context: ./api
+          context: ./deploy-context
+          file: tests/team/ci/Dockerfile.deploy
           push: true
           tags: |
             ${{ env.IMAGE }}:${{ github.sha }}

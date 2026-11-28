@@ -4,7 +4,8 @@ import { customColors } from '../../config';
 import i18n from 'src/i18n/i18n';
 
 const themeColors = {
-  primary: '#5569ff',
+  // SE3002 a11y fix: #5569ff gave 4.33:1 on white (WCAG AA needs 4.5:1); #4a5cf0 gives 5.15:1.
+  primary: '#4a5cf0',
   secondary: '#6E759F',
   success: '#57CA22',
   warning: '#FFA319',

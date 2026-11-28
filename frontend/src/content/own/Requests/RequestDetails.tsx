@@ -144,6 +144,8 @@ export default function RequestDetails({
   return (
     <Grid
       container
+      component="section"
+      aria-label={t('request_details')}
       justifyContent="center"
       alignItems="stretch"
       spacing={2}
@@ -168,12 +170,13 @@ export default function RequestDetails({
               <IconButton
                 style={{ marginRight: 10 }}
                 onClick={handleOpenUpdate}
+                aria-label={t('edit')}
               >
                 <EditTwoToneIcon color="primary" />
               </IconButton>
             )}
           {hasDeletePermission(PermissionEntity.REQUESTS, request) && (
-            <IconButton onClick={handleOpenDelete}>
+            <IconButton onClick={handleOpenDelete} aria-label={t('delete')}>
               <DeleteTwoToneIcon color="error" />
             </IconButton>
           )}

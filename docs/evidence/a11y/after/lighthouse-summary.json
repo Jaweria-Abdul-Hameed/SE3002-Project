@@ -1,0 +1,121 @@
+[
+  {
+    "step": "KS1 Add Request dialog (requester)",
+    "mode": "snapshot",
+    "scores": {
+      "accessibility": 94,
+      "best-practices": 100,
+      "seo": 80
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root",
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS2 Request details with Approve/Reject (admin)",
+    "mode": "navigation",
+    "scores": {
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 54
+    },
+    "failedAccessibilityAudits": [],
+    "failedOtherAudits": [
+      "best-practices: errors-in-console",
+      "seo: is-crawlable",
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS3 Reject dialog with Feedback (admin)",
+    "mode": "snapshot",
+    "scores": {
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 80
+    },
+    "failedAccessibilityAudits": [],
+    "failedOtherAudits": [
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS4 Requests list (requester)",
+    "mode": "navigation",
+    "scores": {
+      "accessibility": 95,
+      "best-practices": 96,
+      "seo": 54
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > button.MuiButtonBase-root > div.MuiBox-root > span.MuiTypography-root",
+          "div.MuiBox-root > button.MuiButtonBase-root > div.MuiBox-root > span.MuiTypography-root"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "best-practices: errors-in-console",
+      "seo: is-crawlable",
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS5 Edit request dialog (creator)",
+    "mode": "snapshot",
+    "scores": {
+      "accessibility": 94,
+      "best-practices": 100,
+      "seo": 80
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root",
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS6 Requests queue (limited admin)",
+    "mode": "navigation",
+    "scores": {
+      "accessibility": 93,
+      "best-practices": 96,
+      "seo": 58
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "best-practices: errors-in-console",
+      "seo: is-crawlable",
+      "seo: meta-description"
+    ]
+  }
+]

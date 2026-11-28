@@ -5,7 +5,8 @@
 import { execSync } from 'node:child_process';
 import { BASE_URL, seed } from './seed.mjs';
 
-const compose = 'docker compose -f docker-compose.yml -f docker-compose.source.yml';
+// COMPOSE_CMD lets CI add its own override file (tests/team/ci/docker-compose.ci.yml).
+const compose = process.env.COMPOSE_CMD ?? 'docker compose -f docker-compose.yml -f docker-compose.source.yml';
 const run = (cmd) => { console.log(`> ${cmd}`); execSync(cmd, { stdio: 'inherit' }); };
 
 run(`${compose} down -v`);

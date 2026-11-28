@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-11-28T11:03:38.863Z",
+  "total": 14,
+  "open": 14,
+  "byCategory": [
+    {
+      "category": "error-handling",
+      "count": 6,
+      "percent": 42.9,
+      "cumulative": 42.9
+    },
+    {
+      "category": "business-rule",
+      "count": 3,
+      "percent": 21.4,
+      "cumulative": 64.3
+    },
+    {
+      "category": "input-validation",
+      "count": 3,
+      "percent": 21.4,
+      "cumulative": 85.7
+    },
+    {
+      "category": "data-integrity",
+      "count": 2,
+      "percent": 14.3,
+      "cumulative": 100
+    }
+  ],
+  "issues": [
+    {
+      "number": 19,
+      "title": "[W8] Missing rejection reason returns 500 instead of 400",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "error-handling"
+    },
+    {
+      "number": 18,
+      "title": "[W7] Request id missing from the approve/reject path returns 500",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "error-handling"
+    },
+    {
+      "number": 17,
+      "title": "[W6] Non-numeric or decimal request id returns 500 instead of 400",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "error-handling"
+    },
+    {
+      "number": 16,
+      "title": "[W5] Request id 0 or negative returns 404 instead of 400",
+      "state": "OPEN",
+      "severity": "trivial",
+      "priority": "P3",
+      "triage": "wont-fix",
+      "category": "error-handling"
+    },
+    {
+      "number": 15,
+      "title": "[W4] Unknown enum value (priority, assetStatus) returns 500 instead of 400",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P2",
+      "triage": "defer",
+      "category": "error-handling"
+    },
+    {
+      "number": 14,
+      "title": "[W3] A JSON number is accepted where a string is required",
+      "state": "OPEN",
+      "severity": "trivial",
+      "priority": "P3",
+      "triage": "wont-fix",
+      "category": "input-validation"
+    },
+    {
+      "number": 13,
+      "title": "[W2] Description longer than 10000 characters is accepted",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "input-validation"
+    },
+    {
+      "number": 12,
+      "title": "[W1] Title longer than 255 characters returns 500 instead of 400",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "error-handling"
+    },
+    {
+      "number": 11,
+      "title": "[D6] Two approvals at the same moment can create two work orders for one request",
+      "state": "OPEN",
+      "severity": "major",
+      "priority": "P2",
+      "triage": "defer",
+      "category": "data-integrity"
+    },
+    {
+      "number": 10,
+      "title": "[D5] A rejected request can still be edited",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "business-rule"
+    },
+    {
+      "number": 9,
+      "title": "[D4] A rejected request can be rejected again; the first reason is overwritten",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P3",
+      "triage": "defer",
+      "category": "business-rule"
+    },
+    {
+      "number": 8,
+      "title": "[D3] PATCH /requests/{id} replaces fields that were not sent",
+      "state": "OPEN",
+      "severity": "major",
+      "priority": "P2",
+      "triage": "defer",
+      "category": "data-integrity"
+    },
+    {
+      "number": 7,
+      "title": "[D2] Empty or whitespace-only request title is accepted",
+      "state": "OPEN",
+      "severity": "minor",
+      "priority": "P2",
+      "triage": "defer",
+      "category": "input-validation"
+    },
+    {
+      "number": 6,
+      "title": "[D1] A rejected (cancelled) request can still be approved",
+      "state": "OPEN",
+      "severity": "major",
+      "priority": "P1",
+      "triage": "fix-now",
+      "category": "business-rule"
+    }
+  ]
+}
