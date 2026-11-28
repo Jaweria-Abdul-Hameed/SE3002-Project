@@ -1,0 +1,140 @@
+openapi: 3.0.3
+info:
+  title: Atlas CMMS - Maintenance Requests (SE3002 test basis) - DEMO with 2 changed constraints
+  version: 1.0.0
+  description: >
+    Our specification of the five endpoints used by workflows W1 and W2. It describes EXPECTED behaviour
+    (docs/section-1-scope-and-test-basis.md, sections 1.4 to 1.6), not whatever the baseline happens to do.
+    The constraints come from the database (title VARCHAR(255)), the code (@NotNull on title; non-blank
+    cancellation reason), upstream's own spec (description maxLength 10000) and assumptions A-2 and A-4.
+    The project's generated spec (/api/v3/api-docs/atlas-cmms) is not accurate enough to generate test
+    data from: it declares no minLength or maxLength for title and no constraint at all on the reason.
+servers:
+  - url: http://localhost:3000/api
+security:
+  - bearerAuth: []
+paths:
+  /requests:
+    post:
+      operationId: createRequest
+      summary: W1 - submit a maintenance request (Requester, Admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RequestCreate' }
+      responses:
+        '200': { description: Request stored as pending (no work order, not cancelled) }
+        '400': { description: Invalid body (missing, blank or too long title; unknown priority) }
+        '403': { description: Role may not create requests (Limited Admin) }
+  /requests/{id}:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+    get:
+      operationId: getRequest
+      summary: Read a request back (creator, or roles that view all requests)
+      responses:
+        '200': { description: The request }
+        '400': { description: Id is not a positive integer }
+        '403': { description: Another requester's request }
+        '404': { description: No such request }
+    patch:
+      operationId: editRequest
+      summary: Edit a pending request (creator); fields not sent are kept
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RequestEdit' }
+      responses:
+        '200': { description: Updated }
+        '400': { description: Invalid body }
+        '403': { description: Not the creator }
+        '404': { description: No such request }
+        '406': { description: Request already approved (BR-2) }
+  /requests/{id}/approve:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+    patch:
+      operationId: approveRequest
+      summary: W2 - approve; creates an OPEN work order (Admin, Limited Admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RequestApprove' }
+      responses:
+        '200': { description: Work order created and linked to the request }
+        '400': { description: Id is not a positive integer }
+        '403': { description: Not allowed to decide (BR-1) or work-order limit reached (BR-3) }
+        '404': { description: No such request }
+        '406': { description: Already approved or rejected (BR-2) }
+  /requests/{id}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+      - name: reason
+        in: query
+        required: true
+        description: Why the request is rejected (the UI calls it Feedback). BR-4.
+        schema:
+          type: string
+          minLength: 10
+          pattern: '\S'
+    patch:
+      operationId: rejectRequest
+      summary: W2 - reject (cancel) with a reason (Admin, Limited Admin)
+      responses:
+        '200': { description: Request cancelled, reason stored }
+        '400': { description: Reason missing (A-4) or id not a positive integer }
+        '403': { description: Not allowed to decide (BR-1) }
+        '404': { description: No such request }
+        '406': { description: Blank reason (BR-4), or request already approved or rejected (BR-2) }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  parameters:
+    RequestId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+  schemas:
+    Priority:
+      type: string
+      enum: [NONE, LOW, MEDIUM, HIGH]
+    RequestCreate:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          pattern: '\S'
+        description:
+          type: string
+          maxLength: 10000
+        priority:
+          $ref: '#/components/schemas/Priority'
+    RequestEdit:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          pattern: '\S'
+        description:
+          type: string
+          maxLength: 10000
+        priority:
+          $ref: '#/components/schemas/Priority'
+    RequestApprove:
+      type: object
+      properties:
+        assetStatus:
+          type: string
+          enum: [OPERATIONAL, DOWN, MODERNIZATION, STANDBY, INSPECTION_SCHEDULED, COMMISSIONING, EMERGENCY_SHUTDOWN]

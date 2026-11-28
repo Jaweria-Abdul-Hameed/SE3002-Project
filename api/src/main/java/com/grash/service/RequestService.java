@@ -394,6 +394,10 @@ public class RequestService {
                 }
                 throw new CustomException("Request is already approved", HttpStatus.NOT_ACCEPTABLE);
             }
+            // SE3002 fix D1 (#6): a rejected (cancelled) request is final and cannot be approved (BR-2, A-1).
+            if (savedRequest.isCancelled()) {
+                throw new CustomException("Request is cancelled", HttpStatus.NOT_ACCEPTABLE);
+            }
             if (runWorkflows) {
                 Collection<Workflow> workflows =
                         workflowService.findByMainConditionAndCompany(WFMainCondition.REQUEST_APPROVED,
