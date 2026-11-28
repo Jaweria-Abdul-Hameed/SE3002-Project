@@ -126,3 +126,6 @@ E = (O + 4M + P) / 6. Actual effort is filled in from commit and session times a
 | Date | Change |
 |---|---|
 | 2026-11-27 | First version. The CI gate was moved before the unit tests so that every later step is merged through a gated pull request. |
+| 2026-11-28 | Schedule re-planned: steps 2.3–2.8 done on 28 Nov (about 19 h late); Sections 3–5 moved to the evening and night of 28 Nov (weekly report §1). |
+| 2026-11-28 | Approach additions: reset before every suite; client-side rate limiting; browser tests sign in once through the API; known-defect policy (`todo` and expected failure). |
+| 2026-11-28 | Exit-criteria status: EX-2 met (100 % / 100 %); EX-3 met (mutation score 100 % ≥ 80 %); EX-1 not yet met (D4 and D5 still fail from Rejected; D1 fixed). |

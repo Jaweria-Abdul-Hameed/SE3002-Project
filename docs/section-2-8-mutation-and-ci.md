@@ -117,8 +117,29 @@ It never turns a failure into a pass.
 
 ## 2.8.5 Documented fix through a pull request
 
-_Filled in once the fix pull request for D1 has run (fails before, passes after)._
+**Pull request #23, "Fix D1 (#6): a rejected request can no longer be approved."** D1 was chosen because it
+belongs to the highest product risk (PR-1, score 20).
+
+| Commit | Change | CI run | Result |
+|---|---|---|---|
+| `347ca33c` | **Test first.** UT-APP-12 now expects 406 "Request is cancelled" and no work order. API-ST-07 is no longer a known defect. | [SE3002-Project run 46138875938](https://github.com/Jaweria-Abdul-Hameed/SE3002-Project/actions/runs/46138875938) | **Failed (before):** `tests` fails on UT-APP-12 (52 run, 1 failure); `system-tests` fails on API-ST-07 ("expected: 406") |
+| `f393ed7d` | **Fix.** `RequestService.approveInternal` throws 406 "Request is cancelled" when `isCancelled()`, before any workflow or work-order creation. | [run 46139692562](https://github.com/Jaweria-Abdul-Hameed/SE3002-Project/actions/runs/46139692562) | **Passed (after):** 52 tests; PIT 114/114 (100 %, the new guard adds 1 mutant); API-ST-07 passes; 30 Playwright flows pass; SonarQube gate passed |
+
+After the merge, issue #6 is closed and labelled `status:fixed` and `status:verified`. FR-12 now passes, so
+requirements passing go from 8/12 to 9/12. The fix's own coverage: `approveInternal` 49/49 lines and 18/18
+branches.
 
 ## 2.8.6 A pull request the pipeline blocked
 
-_Filled in once the blocked pull request has run._
+**Pull request #24, "Simplify the approval permission check".** The change looks harmless: `approve` keeps
+only the SETTINGS condition of BR-1 and drops `|| LIMITED_ADMIN`. In effect it removes the Limited Admin's
+right to approve, which is the real-world version of our `DROP_ROLE_ALTERNATIVE` mutant.
+
+| Gate | Result in [run 46138902709](https://github.com/Jaweria-Abdul-Hameed/SE3002-Project/actions/runs/46138902709) |
+|---|---|
+| `tests` | **Failed.** `approveLimitedAdmin` (UT-BR1-02) and `approvalRecipients` (UT-APP-11): CustomException "Forbidden". 52 run, 2 errors. |
+| `system-tests` | **Failed.** API-BR1-02a (approve as Limited Admin, expected 200); the BR-3 setup ("approval 2 failed: 403", the Limited Admin's approvals) |
+| `sonarqube`, `deploy` | Not run (they need `tests` first) |
+| Branch protection | Merge state **BLOCKED** |
+
+The pull request was not merged. It is kept as evidence and then closed.
