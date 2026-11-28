@@ -1,0 +1,164 @@
+[
+  {
+    "screen": "KS1",
+    "useCase": "UC-1 Submit a request",
+    "label": "Add Request dialog (requester)",
+    "violations": [
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 2,
+        "targets": [
+          ".MuiGrid-grid-lg-12.MuiGrid-item.MuiGrid-grid-xs-12:nth-child(3) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-1nrywae > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root",
+          ".MuiGrid-grid-lg-12.MuiGrid-item.MuiGrid-grid-xs-12:nth-child(4) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-1nrywae > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS2",
+    "useCase": "UC-2 Approve a request",
+    "label": "Request details with Approve/Reject (admin)",
+    "violations": []
+  },
+  {
+    "screen": "KS3",
+    "useCase": "UC-3 Reject with feedback",
+    "label": "Reject dialog with Feedback (admin)",
+    "violations": []
+  },
+  {
+    "screen": "KS4",
+    "useCase": "UC-4 Follow my request",
+    "label": "Requests list (requester)",
+    "violations": [
+      {
+        "rule": "aria-prohibited-attr",
+        "impact": "serious",
+        "help": "Elements must only use permitted ARIA attributes",
+        "nodes": 1,
+        "targets": [
+          "span[aria-label=\"Notifications\"]"
+        ]
+      },
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 14,
+        "targets": [
+          ".bloom-ui-ltr-mu3t9k > .Mui-disabled.bloom-ui-ltr-k4n8kb.MuiIconButton-sizeMedium",
+          ".bloom-ui-ltr-1m2sub1",
+          ".bloom-ui-ltr-uomslz",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(1)"
+        ]
+      },
+      {
+        "rule": "landmark-one-main",
+        "impact": "moderate",
+        "help": "Document should have one main landmark",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "page-has-heading-one",
+        "impact": "moderate",
+        "help": "Page should contain a level-one heading",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "region",
+        "impact": "moderate",
+        "help": "All page content should be contained by landmarks",
+        "nodes": 18,
+        "targets": [
+          "h2",
+          ".bloom-ui-ltr-70qvj9 > .bloom-ui-ltr-0.MuiBox-root",
+          ".bloom-ui-ltr-dddvwc > div:nth-child(1) > div:nth-child(1)",
+          "a[aria-label=\"Work Orders Calendar\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS5",
+    "useCase": "UC-5 Edit a pending request",
+    "label": "Edit request dialog (creator)",
+    "violations": [
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 2,
+        "targets": [
+          ".MuiGrid-grid-lg-12.bloom-ui-ltr-1lxmipv.MuiGrid-item:nth-child(3) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-1nrywae > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root",
+          ".MuiGrid-grid-lg-12.bloom-ui-ltr-1lxmipv.MuiGrid-item:nth-child(4) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-1nrywae > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS6",
+    "useCase": "UC-6 Supervise the queue",
+    "label": "Requests queue (limited admin)",
+    "violations": [
+      {
+        "rule": "aria-prohibited-attr",
+        "impact": "serious",
+        "help": "Elements must only use permitted ARIA attributes",
+        "nodes": 1,
+        "targets": [
+          ".bloom-ui-ltr-17b2q8q"
+        ]
+      },
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 14,
+        "targets": [
+          ".bloom-ui-ltr-mu3t9k > .Mui-disabled.bloom-ui-ltr-k4n8kb.MuiIconButton-sizeMedium",
+          ".bloom-ui-ltr-1m2sub1",
+          ".bloom-ui-ltr-uomslz",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(1)"
+        ]
+      },
+      {
+        "rule": "landmark-one-main",
+        "impact": "moderate",
+        "help": "Document should have one main landmark",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "page-has-heading-one",
+        "impact": "moderate",
+        "help": "Page should contain a level-one heading",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "region",
+        "impact": "moderate",
+        "help": "All page content should be contained by landmarks",
+        "nodes": 27,
+        "targets": [
+          "h2",
+          ".bloom-ui-ltr-70qvj9 > .bloom-ui-ltr-0.MuiBox-root",
+          ".bloom-ui-ltr-1178ru4",
+          ".MuiList-subheader > .bloom-ui-ltr-1z8tbd.MuiBox-root > .bloom-ui-ltr-1bhcbbu.MuiList-root.MuiList-padding > .MuiListItem-root.MuiListItem-gutters.MuiListItem-padding:nth-child(1)"
+        ]
+      }
+    ]
+  }
+]

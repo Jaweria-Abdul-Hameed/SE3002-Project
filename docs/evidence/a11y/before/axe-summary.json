@@ -1,0 +1,308 @@
+[
+  {
+    "screen": "KS1",
+    "useCase": "UC-1 Submit a request",
+    "label": "Add Request dialog (requester)",
+    "violations": [
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 2,
+        "targets": [
+          ".MuiGrid-grid-lg-12.MuiGrid-item.MuiGrid-grid-xs-12:nth-child(3) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-16kcwh9 > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root",
+          ".MuiGrid-grid-lg-12.MuiGrid-item.MuiGrid-grid-xs-12:nth-child(4) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-16kcwh9 > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root"
+        ]
+      },
+      {
+        "rule": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": 3,
+        "targets": [
+          ".bloom-ui-ltr-1bz9kd9",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(3)",
+          ".bloom-ui-ltr-1exwplz"
+        ]
+      },
+      {
+        "rule": "meta-viewport",
+        "impact": "critical",
+        "help": "Zooming and scaling must not be disabled",
+        "nodes": 1,
+        "targets": [
+          "meta[name=\"viewport\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS2",
+    "useCase": "UC-2 Approve a request",
+    "label": "Request details with Approve/Reject (admin)",
+    "violations": [
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 2,
+        "targets": [
+          ".bloom-ui-ltr-0.MuiBox-root:nth-child(2) > .bloom-ui-ltr-k4n8kb.MuiIconButton-sizeMedium.MuiIconButton-root:nth-child(1)",
+          ".bloom-ui-ltr-0.MuiBox-root:nth-child(2) > .bloom-ui-ltr-k4n8kb.MuiIconButton-sizeMedium.MuiIconButton-root:nth-child(2)"
+        ]
+      },
+      {
+        "rule": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": 6,
+        "targets": [
+          ".bloom-ui-ltr-1bz9kd9",
+          ".bloom-ui-ltr-1r3tq8t.MuiButton-outlined.MuiButton-outlinedPrimary:nth-child(3)",
+          ".bloom-ui-ltr-1exwplz",
+          ".bloom-ui-ltr-k7k2jb"
+        ]
+      },
+      {
+        "rule": "meta-viewport",
+        "impact": "critical",
+        "help": "Zooming and scaling must not be disabled",
+        "nodes": 1,
+        "targets": [
+          "meta[name=\"viewport\"]"
+        ]
+      },
+      {
+        "rule": "region",
+        "impact": "moderate",
+        "help": "All page content should be contained by landmarks",
+        "nodes": 2,
+        "targets": [
+          ".bloom-ui-ltr-d94d0v > .bloom-ui-ltr-0.MuiBox-root:nth-child(1)",
+          ".bloom-ui-ltr-1lxmipv"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS3",
+    "useCase": "UC-3 Reject with feedback",
+    "label": "Reject dialog with Feedback (admin)",
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": 7,
+        "targets": [
+          ".bloom-ui-ltr-1bz9kd9",
+          ".bloom-ui-ltr-1r3tq8t.MuiButton-outlined.MuiButton-outlinedPrimary:nth-child(3)",
+          ".bloom-ui-ltr-1exwplz",
+          ".bloom-ui-ltr-k7k2jb"
+        ]
+      },
+      {
+        "rule": "meta-viewport",
+        "impact": "critical",
+        "help": "Zooming and scaling must not be disabled",
+        "nodes": 1,
+        "targets": [
+          "meta[name=\"viewport\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS4",
+    "useCase": "UC-4 Follow my request",
+    "label": "Requests list (requester)",
+    "violations": [
+      {
+        "rule": "aria-prohibited-attr",
+        "impact": "serious",
+        "help": "Elements must only use permitted ARIA attributes",
+        "nodes": 1,
+        "targets": [
+          "span[aria-label=\"Notifications\"]"
+        ]
+      },
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 14,
+        "targets": [
+          ".bloom-ui-ltr-mu3t9k > .Mui-disabled.bloom-ui-ltr-k4n8kb.MuiIconButton-sizeMedium",
+          ".bloom-ui-ltr-rj5yu1",
+          ".bloom-ui-ltr-1kgb8tq",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(1)"
+        ]
+      },
+      {
+        "rule": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": 3,
+        "targets": [
+          ".MuiButton-containedSizeMedium",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(3)",
+          ".bloom-ui-ltr-1exwplz"
+        ]
+      },
+      {
+        "rule": "landmark-one-main",
+        "impact": "moderate",
+        "help": "Document should have one main landmark",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "meta-viewport",
+        "impact": "critical",
+        "help": "Zooming and scaling must not be disabled",
+        "nodes": 1,
+        "targets": [
+          "meta[name=\"viewport\"]"
+        ]
+      },
+      {
+        "rule": "page-has-heading-one",
+        "impact": "moderate",
+        "help": "Page should contain a level-one heading",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "region",
+        "impact": "moderate",
+        "help": "All page content should be contained by landmarks",
+        "nodes": 18,
+        "targets": [
+          "h2",
+          ".bloom-ui-ltr-70qvj9 > .bloom-ui-ltr-0.MuiBox-root",
+          ".bloom-ui-ltr-dddvwc > div:nth-child(1) > div:nth-child(1)",
+          "a[aria-label=\"Work Orders Calendar\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS5",
+    "useCase": "UC-5 Edit a pending request",
+    "label": "Edit request dialog (creator)",
+    "violations": [
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 2,
+        "targets": [
+          ".MuiGrid-grid-lg-12.bloom-ui-ltr-1lxmipv.MuiGrid-item:nth-child(3) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-16kcwh9 > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root",
+          ".MuiGrid-grid-lg-12.bloom-ui-ltr-1lxmipv.MuiGrid-item:nth-child(4) > .MuiAutocomplete-root.MuiAutocomplete-fullWidth.bloom-ui-ltr-1bzgn1h > .MuiFormControl-fullWidth.bloom-ui-ltr-feqhe6.MuiFormControl-root > .MuiInputBase-adornedEnd.MuiAutocomplete-inputRoot.bloom-ui-ltr-16kcwh9 > .MuiInputAdornment-positionEnd.bloom-ui-ltr-1hxoe3t.MuiInputAdornment-root > .bloom-ui-ltr-1fpgo5e.MuiIconButton-sizeSmall.MuiIconButton-root"
+        ]
+      },
+      {
+        "rule": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": 4,
+        "targets": [
+          ".bloom-ui-ltr-1bz9kd9",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(3)",
+          ".bloom-ui-ltr-1exwplz",
+          ".MuiLink-root"
+        ]
+      },
+      {
+        "rule": "meta-viewport",
+        "impact": "critical",
+        "help": "Zooming and scaling must not be disabled",
+        "nodes": 1,
+        "targets": [
+          "meta[name=\"viewport\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "screen": "KS6",
+    "useCase": "UC-6 Supervise the queue",
+    "label": "Requests queue (limited admin)",
+    "violations": [
+      {
+        "rule": "aria-prohibited-attr",
+        "impact": "serious",
+        "help": "Elements must only use permitted ARIA attributes",
+        "nodes": 1,
+        "targets": [
+          ".bloom-ui-ltr-17b2q8q"
+        ]
+      },
+      {
+        "rule": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": 14,
+        "targets": [
+          ".bloom-ui-ltr-mu3t9k > .Mui-disabled.bloom-ui-ltr-k4n8kb.MuiIconButton-sizeMedium",
+          ".bloom-ui-ltr-rj5yu1",
+          ".bloom-ui-ltr-1kgb8tq",
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(1)"
+        ]
+      },
+      {
+        "rule": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": 2,
+        "targets": [
+          ".MuiButton-outlined.MuiButton-outlinedPrimary.MuiButton-outlinedSizeMedium:nth-child(3)",
+          ".bloom-ui-ltr-1exwplz"
+        ]
+      },
+      {
+        "rule": "landmark-one-main",
+        "impact": "moderate",
+        "help": "Document should have one main landmark",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "meta-viewport",
+        "impact": "critical",
+        "help": "Zooming and scaling must not be disabled",
+        "nodes": 1,
+        "targets": [
+          "meta[name=\"viewport\"]"
+        ]
+      },
+      {
+        "rule": "page-has-heading-one",
+        "impact": "moderate",
+        "help": "Page should contain a level-one heading",
+        "nodes": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "rule": "region",
+        "impact": "moderate",
+        "help": "All page content should be contained by landmarks",
+        "nodes": 27,
+        "targets": [
+          "h2",
+          ".bloom-ui-ltr-70qvj9 > .bloom-ui-ltr-0.MuiBox-root",
+          ".bloom-ui-ltr-1178ru4",
+          ".MuiList-subheader > .bloom-ui-ltr-1e2krxy.MuiBox-root > .bloom-ui-ltr-15ukymf.MuiList-root.MuiList-padding > .MuiListItem-root.MuiListItem-gutters.MuiListItem-padding:nth-child(1)"
+        ]
+      }
+    ]
+  }
+]

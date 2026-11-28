@@ -1,0 +1,243 @@
+[
+  {
+    "step": "KS1 Add Request dialog (requester)",
+    "mode": "snapshot",
+    "scores": {
+      "accessibility": 83,
+      "best-practices": 100,
+      "seo": 80
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root",
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root"
+        ]
+      },
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root"
+        ]
+      },
+      {
+        "id": "meta-viewport",
+        "title": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5.",
+        "items": [
+          "head > meta"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS2 Request details with Approve/Reject (admin)",
+    "mode": "navigation",
+    "scores": {
+      "accessibility": 89,
+      "best-practices": 96,
+      "seo": 54
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root"
+        ]
+      },
+      {
+        "id": "meta-viewport",
+        "title": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5.",
+        "items": [
+          "head > meta"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "best-practices: errors-in-console",
+      "seo: is-crawlable",
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS3 Reject dialog with Feedback (admin)",
+    "mode": "snapshot",
+    "scores": {
+      "accessibility": 89,
+      "best-practices": 100,
+      "seo": 80
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root"
+        ]
+      },
+      {
+        "id": "meta-viewport",
+        "title": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5.",
+        "items": [
+          "head > meta"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS4 Requests list (requester)",
+    "mode": "navigation",
+    "scores": {
+      "accessibility": 82,
+      "best-practices": 96,
+      "seo": 58
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "aria-prohibited-attr",
+        "title": "Elements use prohibited ARIA attributes",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > span.BaseBadge-root"
+        ]
+      },
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.bloom-ui-ltr-mu3t9k > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiBox-root > span.BaseBadge-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root"
+        ]
+      },
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root"
+        ]
+      },
+      {
+        "id": "meta-viewport",
+        "title": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5.",
+        "items": [
+          "head > meta"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "best-practices: errors-in-console",
+      "seo: is-crawlable",
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS5 Edit request dialog (creator)",
+    "mode": "snapshot",
+    "scores": {
+      "accessibility": 83,
+      "best-practices": 100,
+      "seo": 80
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root",
+          "div.MuiFormControl-root > div.MuiInputBase-root > div.MuiInputAdornment-root > button.MuiButtonBase-root"
+        ]
+      },
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root"
+        ]
+      },
+      {
+        "id": "meta-viewport",
+        "title": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5.",
+        "items": [
+          "head > meta"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "seo: meta-description"
+    ]
+  },
+  {
+    "step": "KS6 Requests queue (limited admin)",
+    "mode": "navigation",
+    "scores": {
+      "accessibility": 82,
+      "best-practices": 96,
+      "seo": 58
+    },
+    "failedAccessibilityAudits": [
+      {
+        "id": "aria-prohibited-attr",
+        "title": "Elements use prohibited ARIA attributes",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > span.BaseBadge-root"
+        ]
+      },
+      {
+        "id": "button-name",
+        "title": "Buttons do not have an accessible name",
+        "items": [
+          "div.MuiBox-root > div.MuiBox-root > div.bloom-ui-ltr-mu3t9k > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiBox-root > span.BaseBadge-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiBox-root > div.MuiBox-root > button.MuiButtonBase-root",
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root"
+        ]
+      },
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "items": [
+          "div.MuiBox-root > div.MuiPaper-root > div.bloom-ui-ltr-1u81mhi > button.MuiButtonBase-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root",
+          "tbody.MuiTableBody-root > tr.MuiTableRow-root > td.MuiTableCell-root > div.MuiBox-root"
+        ]
+      },
+      {
+        "id": "meta-viewport",
+        "title": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5.",
+        "items": [
+          "head > meta"
+        ]
+      }
+    ],
+    "failedOtherAudits": [
+      "best-practices: errors-in-console",
+      "seo: is-crawlable",
+      "seo: meta-description"
+    ]
+  }
+]
