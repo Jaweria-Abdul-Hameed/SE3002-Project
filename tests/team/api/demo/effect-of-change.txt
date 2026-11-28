@@ -1,0 +1,19 @@
+before: 90 cases (spec 13cdb7751e68b4c1)   after: 90 cases (spec 125f839167908e46)
+  + createRequest body.title [BVA] length 119 (just below maxLength 120) -> "AAA…" (119 chars) valid
+  + createRequest body.title [BVA] length 120 (at maxLength) -> "AAA…" (120 chars) valid
+  + createRequest body.title [BVA] length 121 (just above maxLength) -> "AAA…" (121 chars) invalid
+  + editRequest body.title [BVA] length 119 (just below maxLength 120) -> "AAA…" (119 chars) valid
+  + editRequest body.title [BVA] length 120 (at maxLength) -> "AAA…" (120 chars) valid
+  + editRequest body.title [BVA] length 121 (just above maxLength) -> "AAA…" (121 chars) invalid
+  + rejectRequest query.reason [BVA] length 9 (just below minLength 10) -> "AAAAAAAAA" invalid
+  + rejectRequest query.reason [BVA] length 10 (at minLength) -> "AAAAAAAAAA" valid
+  + rejectRequest query.reason [BVA] length 11 (just above minLength) -> "AAAAAAAAAAA" valid
+  - createRequest body.title [BVA] length 254 (just below maxLength 255) -> "AAA…" (254 chars) valid
+  - createRequest body.title [BVA] length 255 (at maxLength) -> "AAA…" (255 chars) valid
+  - createRequest body.title [BVA] length 256 (just above maxLength) -> "AAA…" (256 chars) invalid
+  - editRequest body.title [BVA] length 254 (just below maxLength 255) -> "AAA…" (254 chars) valid
+  - editRequest body.title [BVA] length 255 (at maxLength) -> "AAA…" (255 chars) valid
+  - editRequest body.title [BVA] length 256 (just above maxLength) -> "AAA…" (256 chars) invalid
+  - rejectRequest query.reason [BVA] length 0 (just below minLength 1) -> "" invalid
+  - rejectRequest query.reason [BVA] length 1 (at minLength) -> "A" valid
+  - rejectRequest query.reason [BVA] length 2 (just above minLength) -> "AA" valid
