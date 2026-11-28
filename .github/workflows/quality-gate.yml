@@ -41,9 +41,21 @@ jobs:
           cache: maven
       - name: Unit tests of our custom PIT mutation operators
         run: mvn -B -f tests/team/pit-mutators/pom.xml install
-      - name: Compile the system under test
-        run: mvn -B -f api/pom.xml -DskipTests compile
-      # Step 2.3 adds our unit tests with JaCoCo coverage and the PIT mutation run here.
+      - name: Our unit tests with JaCoCo coverage (only *TeamTest; upstream tests are not run)
+        run: mvn -B -f api/pom.xml -Pteam test jacoco:report
+      - name: "Exit criterion EX-2: 100 % line and branch coverage of in-scope methods"
+        run: node tests/team/ci/check-coverage.mjs api/target/site/jacoco/jacoco.xml
+      - name: Mutation testing with PIT and our custom operators
+        run: mvn -B -f api/pom.xml -Pteam org.pitest:pitest-maven:mutationCoverage
+      - name: Keep the coverage and mutation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-coverage-mutation-reports
+          path: |
+            api/target/site/jacoco/
+            api/target/pit-reports/
+            api/target/surefire-reports/
 
   sonarqube:
     needs: tests
@@ -64,10 +76,13 @@ jobs:
           cache: maven
       - name: Prepare SonarQube and our quality gate
         run: bash tests/team/ci/sonar-setup.sh
-      - name: Analyse in-scope code and wait for the quality gate
+      - name: Pull in the pit-mutators jar the team profile needs
+        run: mvn -B -f tests/team/pit-mutators/pom.xml -DskipTests install
+      - name: Analyse in-scope code (with our coverage) and wait for the quality gate
         run: >-
-          mvn -B -f api/pom.xml -DskipTests compile
+          mvn -B -f api/pom.xml -Pteam test jacoco:report
           org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
           -Dsonar.host.url=http://localhost:9000
           -Dsonar.token=${{ env.SONAR_TOKEN }}
           -Dsonar.projectKey=se3002-atlas-ci
