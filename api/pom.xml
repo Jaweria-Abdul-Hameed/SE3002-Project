@@ -469,6 +469,9 @@
                             </outputFormats>
                             <timestampedReports>false</timestampedReports>
                             <threads>4</threads>
+                            <!-- Exit criterion EX-3 (docs/section-2-2-test-plan.md): the build fails below an 80 %
+                                 mutation score on the in-scope methods. Justified in docs/section-2-8-mutation-and-ci.md. -->
+                            <mutationThreshold>80</mutationThreshold>
                             <!-- Surefire's argLine starts with JaCoCo's @{argLine}, which is unset when PIT runs
                                  on its own. Give PIT the one JVM flag the code needs instead. -->
                             <parseSurefireArgLine>false</parseSurefireArgLine>

@@ -12,6 +12,7 @@ import com.grash.model.*;
 import com.grash.model.enums.AssetStatus;
 import com.grash.model.enums.PermissionEntity;
 import com.grash.model.enums.RoleCode;
+import com.grash.model.enums.webhook.WebhookEvent;
 import com.grash.model.enums.workflow.WFMainCondition;
 import com.grash.repository.RequestRepository;
 import jakarta.persistence.EntityManager;
@@ -150,6 +151,15 @@ class RequestServiceTeamTest {
         return ((CustomException) t).getHttpStatus();
     }
 
+    @SuppressWarnings("unchecked")
+    void verifyWebhook(Company to, WebhookEvent event, String field, String newStatus) {
+        ArgumentCaptor<Map<String, Object>> payload = ArgumentCaptor.forClass(Map.class);
+        verify(webhookDispatchService).dispatchWebhook(eq(to), eq(event), payload.capture(), eq(field), any(),
+                any(), any(), any(), any(), any());
+        assertThat(payload.getValue()).containsKey("requestId");
+        if (newStatus != null) assertThat(payload.getValue()).containsEntry("newStatus", newStatus);
+    }
+
     String[] mailRecipients(String template) {
         ArgumentCaptor<String[]> to = ArgumentCaptor.forClass(String[].class);
         verify(mailService).sendMessageUsingThymeleafTemplate(to.capture(), any(), any(), eq(template), any(), any());
@@ -225,11 +235,17 @@ class RequestServiceTeamTest {
             assertThat(result.isCancelled()).isTrue();
             assertThat(result.getCancellationReason()).isEqualTo("Duplicate of R000001");
             assertThat(result.getWorkOrder()).isNull();
+            verify(requestRepository).save(pending);
+            verify(workflowService).findByMainConditionAndCompany(WFMainCondition.REQUEST_REJECTED, company.getId());
+            assertThat(mailRecipients("rejected-request.html"))
+                    .containsExactlyInAnyOrder("bilal@se3002.test", "sara@se3002.test");
+            verifyWebhook(company, WebhookEvent.WORK_REQUEST_STATUS_CHANGE, "changedRequest", "CANCELLED");
         }
 
         @Test @DisplayName("UT-CAN-P2 flip D1: Limited Admin (A=F, B=T) -> same outcome as P1")
         void p2() {
             assertThat(service.cancel(REQUEST_ID, "Duplicate", limitedAdmin).isCancelled()).isTrue();
+            verify(requestRepository).save(pending);
         }
 
         @Test @DisplayName("UT-CAN-P3 flip D2: Requester (A=F, B=F) -> 403")
@@ -274,6 +290,8 @@ class RequestServiceTeamTest {
         void p8() {
             pending.setCreatedBy(null);
             assertThat(service.cancel(REQUEST_ID, "Duplicate", admin).isCancelled()).isTrue();
+            verify(userService, never()).findById(any());
+            assertThat(mailRecipients("rejected-request.html")).containsExactly("bilal@se3002.test");
         }
 
         @Test @DisplayName("UT-CAN-09 mail list: only enabled Limited Admins with e-mail on, plus the requester")
@@ -285,7 +303,10 @@ class RequestServiceTeamTest {
             when(userService.findByCompany(company.getId()))
                     .thenReturn(List.of(admin, limitedAdmin, requester, disabledLa, quietLa));
 
-            assertThat(service.cancel(REQUEST_ID, "Duplicate", admin).isCancelled()).isTrue();
+            service.cancel(REQUEST_ID, "Duplicate", admin);
+
+            assertThat(mailRecipients("rejected-request.html"))
+                    .containsExactlyInAnyOrder("bilal@se3002.test", "sara@se3002.test");
         }
 
         @Test @DisplayName("UT-CAN-11 'request rejected' automation workflows are run for the cancelled request")
@@ -293,7 +314,8 @@ class RequestServiceTeamTest {
             Workflow wf = mock(Workflow.class);
             when(workflowService.findByMainConditionAndCompany(WFMainCondition.REQUEST_REJECTED, company.getId()))
                     .thenReturn(List.of(wf));
-            assertThat(service.cancel(REQUEST_ID, "Duplicate", admin).isCancelled()).isTrue();
+            service.cancel(REQUEST_ID, "Duplicate", admin);
+            verify(workflowService).runRequest(wf, pending);
         }
 
         @Test @DisplayName("UT-CAN-10 in-app notice goes to the other Limited Admins, not to the Limited Admin who decided")
@@ -303,7 +325,12 @@ class RequestServiceTeamTest {
             when(userService.findByCompany(company.getId()))
                     .thenReturn(List.of(admin, limitedAdmin, otherLa, requester));
 
-            assertThat(service.cancel(REQUEST_ID, "Duplicate", limitedAdmin).isCancelled()).isTrue();
+            service.cancel(REQUEST_ID, "Duplicate", limitedAdmin);
+
+            ArgumentCaptor<List<Notification>> sent = ArgumentCaptor.forClass(List.class);
+            verify(notificationService, times(2)).createMultiple(sent.capture(), eq(true), any());
+            List<Notification> toLimitedAdmins = sent.getAllValues().get(1);
+            assertThat(toLimitedAdmins).extracting(n -> n.getUser().getId()).containsExactly(7L);
         }
     }
 
@@ -321,6 +348,11 @@ class RequestServiceTeamTest {
             ArgumentCaptor<WorkOrderPostDTO> dto = ArgumentCaptor.forClass(WorkOrderPostDTO.class);
             verify(workOrderService).create(dto.capture(), eq(company));
             assertThat(dto.getValue().getParentRequest()).isSameAs(pending);
+            verify(requestRepository).save(pending);
+            verify(workflowService).findByMainConditionAndCompany(WFMainCondition.REQUEST_APPROVED, company.getId());
+            assertThat(mailRecipients("approved-request.html"))
+                    .containsExactlyInAnyOrder("bilal@se3002.test", "sara@se3002.test");
+            verifyWebhook(company, WebhookEvent.WORK_REQUEST_STATUS_CHANGE, "changedRequest", "APPROVED");
         }
 
         @Test @DisplayName("UT-APP-02 already approved -> 406 Request is already approved, no second work order (BR-2)")
@@ -347,6 +379,7 @@ class RequestServiceTeamTest {
             assertThatThrownBy(() -> service.approve(REQUEST_ID, new RequestApproveDTO(), admin))
                     .satisfies(e -> assertThat(statusOf(e)).isEqualTo(HttpStatus.FORBIDDEN));
             assertThat(pending.getWorkOrder()).isNull();
+            verify(requestRepository, never()).save(any());
         }
 
         @Test @DisplayName("UT-APP-05 an automation workflow already created the work order -> it is returned, no second one")
@@ -359,17 +392,20 @@ class RequestServiceTeamTest {
                     .when(workflowService).runRequest(wf, pending);
 
             assertThat(service.approve(REQUEST_ID, new RequestApproveDTO(), admin)).isSameAs(fromWorkflow);
+            verify(workOrderService, never()).create(any(), any());
         }
 
         @Test @DisplayName("UT-APP-06 approveFromWorkflow on an approved request returns the existing work order (no error)")
         void fromWorkflowAlreadyApproved() {
             pending.setWorkOrder(createdWorkOrder);
             assertThat(service.approveFromWorkflow(REQUEST_ID, new RequestApproveDTO(), admin)).isSameAs(createdWorkOrder);
+            verify(workflowService, never()).findByMainConditionAndCompany(any(), any());
         }
 
         @Test @DisplayName("UT-APP-07 approveFromWorkflow on a pending request creates the work order without re-running workflows")
         void fromWorkflowPending() {
             assertThat(service.approveFromWorkflow(REQUEST_ID, new RequestApproveDTO(), admin)).isSameAs(createdWorkOrder);
+            verify(workflowService, never()).findByMainConditionAndCompany(any(), any());
         }
 
         @Test @DisplayName("UT-APP-08 asset with new status -> asset status updated and saved")
@@ -383,6 +419,7 @@ class RequestServiceTeamTest {
             service.approve(REQUEST_ID, dto, admin);
 
             assertThat(asset.getStatus()).isEqualTo(AssetStatus.DOWN);
+            verify(assetService).save(asset);
         }
 
         @Test @DisplayName("UT-APP-09 asset but no new status -> asset untouched")
@@ -394,12 +431,15 @@ class RequestServiceTeamTest {
             service.approve(REQUEST_ID, new RequestApproveDTO(), admin);
 
             assertThat(asset.getStatus()).isEqualTo(AssetStatus.OPERATIONAL);
+            verify(assetService, never()).save(any());
         }
 
         @Test @DisplayName("UT-APP-10 request without creator -> approved, no requester lookup")
         void noCreator() {
             pending.setCreatedBy(null);
-            assertThat(service.approve(REQUEST_ID, new RequestApproveDTO(), admin)).isSameAs(createdWorkOrder);
+            service.approve(REQUEST_ID, new RequestApproveDTO(), admin);
+            verify(userService, never()).findById(any());
+            assertThat(mailRecipients("approved-request.html")).containsExactly("bilal@se3002.test");
         }
 
         @Test @DisplayName("UT-APP-11 mail list excludes disabled and e-mail-off Limited Admins; notice skips the deciding Limited Admin")
@@ -412,7 +452,14 @@ class RequestServiceTeamTest {
             when(userService.findByCompany(company.getId()))
                     .thenReturn(List.of(admin, limitedAdmin, requester, disabledLa, quietLa));
 
-            assertThat(service.approve(REQUEST_ID, new RequestApproveDTO(), limitedAdmin)).isSameAs(createdWorkOrder);
+            service.approve(REQUEST_ID, new RequestApproveDTO(), limitedAdmin);
+
+            assertThat(mailRecipients("approved-request.html"))
+                    .containsExactlyInAnyOrder("bilal@se3002.test", "sara@se3002.test");
+            ArgumentCaptor<List<Notification>> sent = ArgumentCaptor.forClass(List.class);
+            verify(notificationService, times(2)).createMultiple(sent.capture(), eq(true), any());
+            assertThat(sent.getAllValues().get(1)).extracting(n -> n.getUser().getId())
+                    .containsExactlyInAnyOrder(5L, 6L);
         }
 
         @Test @DisplayName("UT-APP-12 cancelled request can still be approved (defect D1: expected 406, baseline 200)")
@@ -538,7 +585,7 @@ class RequestServiceTeamTest {
             RequestPostDTO dto = new RequestPostDTO();
             dto.setTitle("Leaking tap");
             Request mapped = new Request();
-            mapped.setTitle("Leaking tap");
+            mapped.setTitle("  <b>Leaking</b> tap  ");
             when(requestMapper.fromPostDTO(dto)).thenReturn(mapped);
             when(customSequenceService.getNextRequestSequence(company)).thenReturn(7L);
             when(requestRepository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
@@ -546,8 +593,12 @@ class RequestServiceTeamTest {
             Request created = service.create(dto, requester);
 
             assertThat(created.getCustomId()).isEqualTo("R000007");
+            assertThat(created.getTitle()).as("HTML removed and trimmed by the sanitiser").isEqualTo("Leaking tap");
+            verify(em).refresh(created);
+            verifyWebhook(company, WebhookEvent.NEW_REQUEST, "newRequest", null);
             assertThat(created.isCancelled()).isFalse();
             assertThat(created.getWorkOrder()).isNull();
+            verify(workflowService).findByMainConditionAndCompany(WFMainCondition.REQUEST_CREATED, company.getId());
         }
 
         @Test @DisplayName("UT-CRE-03 custom field values are stored with the request")
@@ -559,7 +610,10 @@ class RequestServiceTeamTest {
             when(requestMapper.fromPostDTO(dto)).thenReturn(mapped);
             when(requestRepository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
 
-            assertThat(service.create(dto, company)).isSameAs(mapped);
+            service.create(dto, company);
+
+            verify(customFieldValueService).setCustomFields(eq(mapped), any(), eq(dto.getCustomFields()), eq(company),
+                    any(), any());
         }
 
         @Test @DisplayName("UT-CRE-04 voice note without licence -> 403, nothing stored")
@@ -585,6 +639,7 @@ class RequestServiceTeamTest {
             when(requestRepository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
 
             assertThat(service.create(r, company).getCustomId()).isEqualTo("R000012");
+            verify(requestMapper, never()).fromPostDTO(any());
         }
 
         // The public request portal is out of functional scope (it needs a licence key in the UI). These two tests
@@ -601,8 +656,10 @@ class RequestServiceTeamTest {
         void portalPresets() {
             Asset asset = new Asset();
             Location location = new Location();
+            Company portalCompany = new Company();
+            portalCompany.setId(2L);
             RequestPortal portal = new RequestPortal();
-            portal.setCompany(company);
+            portal.setCompany(portalCompany);
             portal.getFields().addAll(List.of(
                     field(com.grash.model.enums.PortalFieldType.ASSET, null, null),
                     field(com.grash.model.enums.PortalFieldType.CONTACT, null, null),
@@ -612,10 +669,14 @@ class RequestServiceTeamTest {
             when(customSequenceService.getNextRequestSequence(company)).thenReturn(3L);
             when(requestRepository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
             Request r = new Request();
-            r.setTitle("From portal");
+            r.setTitle("<i>From portal</i>");
 
             Request created = service.create(r, company, portal);
 
+            assertThat(created.getCompany()).isSameAs(portalCompany);
+            assertThat(created.getTitle()).isEqualTo("From portal");
+            verify(em).refresh(created);
+            verifyWebhook(company, WebhookEvent.NEW_REQUEST, "newRequest", null);
             assertThat(created.getAsset()).isSameAs(asset);
             assertThat(created.getLocation()).isSameAs(location);
             assertThat(created.getRequestPortal()).isSameAs(portal);
