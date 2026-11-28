@@ -5,7 +5,7 @@
   "description": "SE3002: OpenAPI-driven test-data generator and API tests for the Requests module",
   "scripts": {
     "generate": "node generator/generate.mjs openapi.yaml generated/test-data.json",
-    "test": "node --test --test-concurrency=1 tests/"
+    "test": "node --test --test-concurrency=1 \"tests/*.test.mjs\""
   },
   "dependencies": {
     "yaml": "2.6.1"
