@@ -469,6 +469,12 @@
                             </outputFormats>
                             <timestampedReports>false</timestampedReports>
                             <threads>4</threads>
+                            <!-- Surefire's argLine starts with JaCoCo's @{argLine}, which is unset when PIT runs
+                                 on its own. Give PIT the one JVM flag the code needs instead. -->
+                            <parseSurefireArgLine>false</parseSurefireArgLine>
+                            <jvmArgs>
+                                <value>--add-opens=java.base/java.lang=ALL-UNNAMED</value>
+                            </jvmArgs>
                         </configuration>
                     </plugin>
                 </plugins>
