@@ -1,0 +1,247 @@
+{
+  "sonarqube": "26.9.0.129388",
+  "analysedAt": "2026-11-27T12:17:22.142Z",
+  "rule": "java:S1541 (threshold 1)",
+  "methods": [
+    {
+      "file": "RequestService.java",
+      "line": 87,
+      "method": "verifyRecaptcha",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "RequestService.java",
+      "line": 101,
+      "method": "create",
+      "cyclomaticComplexity": 5
+    },
+    {
+      "file": "RequestService.java",
+      "line": 125,
+      "method": "create",
+      "cyclomaticComplexity": 5
+    },
+    {
+      "file": "RequestService.java",
+      "line": 153,
+      "method": "update",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "RequestService.java",
+      "line": 195,
+      "method": "createWorkOrderFromRequest",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "RequestService.java",
+      "line": 279,
+      "method": "getSearchCriteria",
+      "cyclomaticComplexity": 5
+    },
+    {
+      "file": "RequestService.java",
+      "line": 306,
+      "method": "getById",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "RequestService.java",
+      "line": 317,
+      "method": "create",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "RequestService.java",
+      "line": 326,
+      "method": "createFromPortal",
+      "cyclomaticComplexity": 8
+    },
+    {
+      "file": "RequestService.java",
+      "line": 361,
+      "method": "patch",
+      "cyclomaticComplexity": 4
+    },
+    {
+      "file": "RequestService.java",
+      "line": 375,
+      "method": "approve",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "RequestService.java",
+      "line": 387,
+      "method": "approveInternal",
+      "cyclomaticComplexity": 9
+    },
+    {
+      "file": "RequestService.java",
+      "line": 456,
+      "method": "cancel",
+      "cyclomaticComplexity": 8
+    },
+    {
+      "file": "RequestService.java",
+      "line": 518,
+      "method": "deleteByIdAndUser",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 115,
+      "method": "create",
+      "cyclomaticComplexity": 5
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 191,
+      "method": "checkUsageBasedLimit",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 203,
+      "method": "update",
+      "cyclomaticComplexity": 12
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 248,
+      "method": "patch",
+      "cyclomaticComplexity": 7
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 277,
+      "method": "delete",
+      "cyclomaticComplexity": 4
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 298,
+      "method": "checkAccessToWorkOrderId",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 322,
+      "method": "notify",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 341,
+      "method": "patchNotify",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 420,
+      "method": "saveAndFlushWithWebhook",
+      "cyclomaticComplexity": 7
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 544,
+      "method": "getAllCost",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 557,
+      "method": "importWorkOrder",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 590,
+      "method": "getSearchCriteria",
+      "cyclomaticComplexity": 7
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 719,
+      "method": "detectPatchDTOChangedFields",
+      "cyclomaticComplexity": 20
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 767,
+      "method": "detectChangedFieldsFromEntity",
+      "cyclomaticComplexity": 21
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 818,
+      "method": "collectionsMatch",
+      "cyclomaticComplexity": 6
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 836,
+      "method": "changeStatus",
+      "cyclomaticComplexity": 37
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 942,
+      "method": "generatePdfStream",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 952,
+      "method": "generatePdfStream",
+      "cyclomaticComplexity": 10
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1053,
+      "method": "generateReport",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1068,
+      "method": "deleteByIdAndUser",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1095,
+      "method": "createByUser",
+      "cyclomaticComplexity": 7
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1133,
+      "method": "sendReport",
+      "cyclomaticComplexity": 6
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1208,
+      "method": "getEvents",
+      "cyclomaticComplexity": 2
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1293,
+      "method": "canViewWorkOrderBase",
+      "cyclomaticComplexity": 5
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1301,
+      "method": "addFiles",
+      "cyclomaticComplexity": 3
+    },
+    {
+      "file": "WorkOrderService.java",
+      "line": 1319,
+      "method": "removeFile",
+      "cyclomaticComplexity": 3
+    }
+  ]
+}
