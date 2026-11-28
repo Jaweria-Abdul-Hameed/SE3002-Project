@@ -1,0 +1,8 @@
+# Runtime image for the gated deployment. The JAR is built in the CI job first (Maven cache and
+# download retries apply there), so this build downloads nothing from Maven Central.
+# The start command is the same as upstream's api/Dockerfile.
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+COPY app.jar /app/my-spring-boot-app.jar
+EXPOSE 8080
+CMD ["sh", "-c", "java --add-opens=java.base/java.lang=ALL-UNNAMED $JAVA_OPTS -jar /app/my-spring-boot-app.jar"]
