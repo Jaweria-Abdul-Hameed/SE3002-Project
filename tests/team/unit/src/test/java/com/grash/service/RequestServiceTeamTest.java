@@ -462,12 +462,15 @@ class RequestServiceTeamTest {
                     .containsExactlyInAnyOrder(5L, 6L);
         }
 
-        @Test @DisplayName("UT-APP-12 cancelled request can still be approved (defect D1: expected 406, baseline 200)")
-        void approvesCancelledRequest_documentsD1() {
+        @Test @DisplayName("UT-APP-12 rejected (cancelled) request cannot be approved -> 406, no work order (D1, issue #6)")
+        void rejectedRequestCannotBeApproved() {
             pending.setCancelled(true);
             pending.setCancellationReason("Duplicate");
-            // Baseline behaviour, recorded so the defect is visible in the suite. Fixed through a pull request in step 2.8.
-            assertThat(service.approve(REQUEST_ID, new RequestApproveDTO(), admin)).isSameAs(createdWorkOrder);
+            assertThatThrownBy(() -> service.approve(REQUEST_ID, new RequestApproveDTO(), admin))
+                    .hasMessage("Request is cancelled")
+                    .satisfies(e -> assertThat(statusOf(e)).isEqualTo(HttpStatus.NOT_ACCEPTABLE));
+            assertThat(pending.getWorkOrder()).isNull();
+            verify(workOrderService, never()).create(any(), any());
         }
     }
 

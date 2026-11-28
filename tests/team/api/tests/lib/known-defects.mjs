@@ -37,7 +37,7 @@ for (const op of ['getRequest', 'editRequest', 'approveRequest', 'rejectRequest'
 add('W7', 'approveRequest|path.id.07', 'rejectRequest|path.id.07');
 add('W8', 'rejectRequest|query.reason.06');
 // Rule and state scenarios (rules-state.test.mjs)
-add('D1', 'state|Rejected -> approve');
+// D1 (#6) fixed by the 'fix D1' pull request: API-ST-07 must now pass.
 add('D4', 'state|Rejected -> reject again');
 add('D5', 'state|Rejected -> edit');
 add('D3', 'rule|PATCH keeps fields that were not sent');
