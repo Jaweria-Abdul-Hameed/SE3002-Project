@@ -362,5 +362,124 @@
         <finalName>app</finalName>
     </build>
 
+    <!-- SE3002 team profile (mvn -Pteam ...). It adds our own tests from tests/team/unit and runs only
+         those (*TeamTest); upstream tests are not run. It also configures PIT with our two custom mutation
+         operators (tests/team/pit-mutators). The default upstream build is unchanged. -->
+    <profiles>
+        <profile>
+            <id>team</id>
+            <dependencies>
+                <!-- PIT loads custom mutators from the minion's test classpath, so the plugin jar is
+                     needed here as well as on the pitest-maven plugin. -->
+                <dependency>
+                    <groupId>se3002.team</groupId>
+                    <artifactId>atlas-pit-mutators</artifactId>
+                    <version>1.0.0</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-team-tests</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.basedir}/../tests/team/unit/src/test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*TeamTest.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.30.2</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>1.2.3</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>se3002.team</groupId>
+                                <artifactId>atlas-pit-mutators</artifactId>
+                                <version>1.0.0</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <targetClasses>
+                                <param>com.grash.service.RequestService</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>com.grash.service.*TeamTest*</param>
+                            </targetTests>
+                            <!-- Out of scope (docs/section-1-scope-and-test-basis.md §1.7): search, portal,
+                                 reCAPTCHA, notifications on creation, plain repository pass-throughs. The
+                                 mutation score is therefore measured on the business-rule methods only. -->
+                            <excludedMethods>
+                                <param>findBySearchCriteria</param>
+                                <param>lambda$findBySearchCriteria*</param>
+                                <param>getSearchCriteria</param>
+                                <param>lambda$getSearchCriteria*</param>
+                                <param>createFromPortal</param>
+                                <param>validateRequestAgainstCompany</param>
+                                <param>lambda$validateRequestAgainstCompany*</param>
+                                <param>verifyRecaptcha</param>
+                                <param>onRequestCreation</param>
+                                <param>lambda$onRequestCreation*</param>
+                                <param>update</param>
+                                <param>setRequestCustomFields</param>
+                                <param>lambda$setRequestCustomFields*</param>
+                                <param>getAll</param>
+                                <param>delete</param>
+                                <param>deleteByIdAndUser</param>
+                                <param>findById</param>
+                                <param>findByCompany</param>
+                                <param>save</param>
+                                <param>findByCreatedAtBetweenAndCompany</param>
+                                <param>countPending</param>
+                                <param>findByCategoryAndCreatedAtBetween</param>
+                            </excludedMethods>
+                            <mutators>
+                                <mutator>DEFAULTS</mutator>
+                                <mutator>DROP_ROLE_ALTERNATIVE</mutator>
+                                <mutator>IGNORE_APPROVAL_STATE</mutator>
+                            </mutators>
+                            <outputFormats>
+                                <param>XML</param>
+                                <param>HTML</param>
+                            </outputFormats>
+                            <timestampedReports>false</timestampedReports>
+                            <threads>4</threads>
+                            <!-- Surefire's argLine starts with JaCoCo's @{argLine}, which is unset when PIT runs
+                                 on its own. Give PIT the one JVM flag the code needs instead. -->
+                            <parseSurefireArgLine>false</parseSurefireArgLine>
+                            <jvmArgs>
+                                <value>--add-opens=java.base/java.lang=ALL-UNNAMED</value>
+                            </jvmArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
