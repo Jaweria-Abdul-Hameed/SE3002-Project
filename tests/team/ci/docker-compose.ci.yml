@@ -1,0 +1,7 @@
+# CI only: the API image is built from the JAR that the CI job compiled with Maven (cache and download
+# retries apply there), instead of running Maven again inside Docker. Used together with
+# docker-compose.yml and docker-compose.source.yml.
+services:
+  api:
+    image: se3002/atlas-api:ci
+    build: ./deploy-context

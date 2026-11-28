@@ -1,0 +1,24 @@
+{
+  "sonarqube": "26.9.0.129388",
+  "analysedAt": "2026-11-27T12:17:22.142Z",
+  "project": "se3002-atlas",
+  "metrics": {
+    "coverage": "0.0",
+    "complexity": "5171",
+    "reliability_rating": "5.0",
+    "code_smells": "1351",
+    "duplicated_lines_density": "2.5",
+    "functions": "2294",
+    "security_rating": "4.0",
+    "sqale_debt_ratio": "1.0",
+    "security_hotspots": "0",
+    "security_review_rating": "1.0",
+    "sqale_index": "12210",
+    "sqale_rating": "1.0",
+    "bugs": "114",
+    "cognitive_complexity": "4148",
+    "duplicated_blocks": "94",
+    "ncloc": "41833",
+    "vulnerabilities": "215"
+  }
+}
